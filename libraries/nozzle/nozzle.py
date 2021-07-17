@@ -31,7 +31,7 @@ def nozzle(ae_at, x_max):
 
 
 # Plotting nozzle geometry with Plotly
-def make_plot(x, y, y_max, x_max):
+def nozzle_plot(x, y, y_max, x_max):
     
     trace1 = go.Scatter(
         x=x,

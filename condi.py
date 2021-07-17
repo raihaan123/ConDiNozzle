@@ -14,7 +14,9 @@ import streamlit as st
 import numpy as np
 import plotly.graph_objs as go
 
-from nozzle import nozzle, make_plot
+# Nozzle and flow funcions
+from libraries.nozzle import nozzle, nozzle_plot, x_max
+
 
 st.set_page_config(page_title='Interactive Con-Di Nozzle',
                    page_icon='media/mech.jpg',
@@ -28,7 +30,6 @@ st.write("""
 st.text("")
 
 # Fixed parameters
-x_max = 10
 init_ae_at = 2.5
 init_g = 1.4
 init_pb_pc = 1.0
@@ -47,5 +48,5 @@ with st.sidebar:
 x, y, y_max = nozzle(ae_at, x_max)
 
 # Plotting nozzle geometry with Plotly
-fig = make_plot(x, y, y_max, x_max)
+fig = nozzle_plot(x, y, y_max, x_max)
 st.plotly_chart(fig, use_container_width=True)
