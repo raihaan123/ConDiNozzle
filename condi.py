@@ -12,15 +12,12 @@ Mechanical Engineering, Imperial College London
 
 import streamlit as st
 import numpy as np
-import matplotlib.pyplot as plt
-import matplotlib.animation as animation
-import plotly
 import plotly.graph_objs as go
 
 from nozzle import nozzle
 
 st.set_page_config(page_title='Interactive Con-Di Nozzle',
-                   page_icon='mech.jpg',
+                   page_icon='media/mech.jpg',
                    layout='wide')
 
 
