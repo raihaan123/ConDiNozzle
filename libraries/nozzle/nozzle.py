@@ -10,7 +10,7 @@ import numpy as np
 import plotly.graph_objects as go
 
 
-def nozzle(ae_at, x_max):
+def nozzle_calc(ae_at, x_max):
 
     # xc=-3:.1:0;
     xc = np.arange(-3, 0, 0.1)
