@@ -14,7 +14,7 @@ import streamlit as st
 import numpy as np
 import plotly.graph_objs as go
 
-from nozzle import nozzle
+from nozzle import nozzle, make_plot
 
 st.set_page_config(page_title='Interactive Con-Di Nozzle',
                    page_icon='media/mech.jpg',
@@ -44,45 +44,8 @@ with st.sidebar:
 
 
 # Calculating the nozzle geometry - comments are MATLAB snippets from CDN.m
-
 x, y, y_max = nozzle(ae_at, x_max)
 
-
 # Plotting nozzle geometry with Plotly
-trace1 = go.Scatter(
-    x=x,
-    y=y,
-    mode='lines',
-    name='Nozzle Geometry',
-    line=dict(
-        color='rgb(153, 0, 51)',
-        width=5
-    ),
-    # fill = 'tozeroy',
-    # fillcolor='rgba(0,0,0,0.1)',
-    showlegend=False
-)
-
-trace2 = go.Scatter(
-    x=x,
-    y=np.ones(np.shape(y)) * (y_max+1),
-    mode='lines',
-    fill='tonexty',
-    fillcolor='rgba(150,0,0,0.3)',
-    showlegend=False
-)
-
-layout = go.Layout(
-    title='Nozzle Geometry',
-    xaxis=dict(
-        title='x'
-    ),
-    xaxis_range=[-3, x_max+2],
-    yaxis=dict(
-        title='y'
-    ),
-    yaxis_range=[0, y_max]
-)
-
-fig = go.Figure(data=[trace1, trace2], layout=layout)
+fig = make_plot(x, y, y_max, x_max)
 st.plotly_chart(fig, use_container_width=True)
