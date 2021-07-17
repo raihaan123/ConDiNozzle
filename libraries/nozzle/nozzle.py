@@ -40,7 +40,7 @@ def nozzle_plot(x, y, y_max, x_max):
         name='Nozzle Geometry',
         line=dict(
             color='rgb(153, 0, 51)',
-            width=5
+            width=3
         ),
         # fill = 'tozeroy',
         # fillcolor='rgba(0,0,0,0.1)',
@@ -58,14 +58,16 @@ def nozzle_plot(x, y, y_max, x_max):
 
     layout = go.Layout(
         title='Nozzle Geometry',
-        xaxis=dict(
-            title='x'
-        ),
         xaxis_range=[-3, x_max+2],
         yaxis=dict(
-            title='y'
+            title='A / At'
         ),
         yaxis_range=[0, y_max]
     )
 
-    return go.Figure(data=[trace1, trace2], layout=layout)
+    fig = go.Figure(data=[trace1, trace2], layout=layout)
+    fig.update_xaxes(showgrid=False, zeroline=False)
+    fig.update_yaxes(showgrid=False, zeroline=False)
+
+    
+    return fig
