@@ -17,6 +17,12 @@ import matplotlib.animation as animation
 import plotly
 import plotly.graph_objs as go
 
+from nozzle import nozzle
+
+st.set_page_config(page_title='Interactive Con-Di Nozzle',
+                   page_icon='mech.jpg',
+                   layout='wide')
+
 
 st.write("""
 ## Interactive Converging-Diverging Nozzle Visualisation
@@ -42,63 +48,44 @@ with st.sidebar:
 
 # Calculating the nozzle geometry - comments are MATLAB snippets from CDN.m
 
-# xc=-3:.1:0;
-xc = np.arange(-3, 0, 0.1)
-# yc=1+xc.^2/4.5;
-yc = 1 + xc**2/4.5
-# xd=0:.1:xmax;
-xd = np.arange(0, x_max, 0.1)
-# yd=tanh(2*xd/xmax)/tanh(2)*(aeat-1)+1;
-yd = np.tanh(2*xd/x_max)/np.tanh(2)*(ae_at-1) + 1
-# x=[xc xd]; y=[yc yd];
-x = np.concatenate((xc, xd))
-y = np.concatenate((yc, yd))
+x, y, y_max = nozzle(ae_at, x_max)
 
-# Plotting nozzle geometry with plotly
-trace = go.Scatter(
+
+# Plotting nozzle geometry with Plotly
+trace1 = go.Scatter(
     x=x,
     y=y,
     mode='lines',
     name='Nozzle Geometry',
     line=dict(
-        color='rgb(200, 0, 0)',
-        width=1
-    )
+        color='rgb(153, 0, 51)',
+        width=5
+    ),
+    # fill = 'tozeroy',
+    # fillcolor='rgba(0,0,0,0.1)',
+    showlegend=False
 )
+
+trace2 = go.Scatter(
+    x=x,
+    y=np.ones(np.shape(y)) * (y_max+1),
+    mode='lines',
+    fill='tonexty',
+    fillcolor='rgba(150,0,0,0.3)',
+    showlegend=False
+)
+
 layout = go.Layout(
     title='Nozzle Geometry',
     xaxis=dict(
         title='x'
     ),
-
+    xaxis_range=[-3, x_max+2],
     yaxis=dict(
         title='y'
-    )
+    ),
+    yaxis_range=[0, y_max]
 )
 
-# Set x limits for fig to be [-3, x_max]
-
-fig = go.Figure(data=[trace], layout=layout)
+fig = go.Figure(data=[trace1, trace2], layout=layout)
 st.plotly_chart(fig, use_container_width=True)
-
-# fig, ax = plt.subplots()
-# # ymax=max([3 y(end)*1.5]);
-# ymax = max(3, y[-1]*1.5)
-# st.write(y[-1]*1.5)
-# # fill([x x(end) x(1)],[y  ymax ymax],[0.85 0.85 0.85]);
-# ax.fill([x[0], x[-1], x[0], x[-1]], [y[0], ymax, ymax, y[0]], '0.85')
-# # plot(x,y,'k');ylim([0 ymax]);ylabel('A/A_t');xlim(x_max);
-# ax.plot(x, y, 'k')
-# ax.set_ylim([0, ymax])
-# ax.set_ylabel('A/A_t')
-# ax.set_xlim([-3, x_max])
-# # plot([x(end) x(end)],[y(end) ymax],'k');
-# ax.plot([x[-1], x[-1]], [y[-1], ymax], 'k')
-
-# # Show figure on streamlit
-# st.write(fig)
-
-# Plotting nozzle geometry - using plotly
-
-
-
