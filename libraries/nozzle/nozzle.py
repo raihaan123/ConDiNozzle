@@ -19,7 +19,7 @@ def nozzle_calc(ae_at, ai_at, x_max):
     # xd=0:.1:xmax;
     xd = np.arange(0, x_max, 0.1)
     # yd=tanh(2*xd/xmax)/tanh(2)*(aeat-1)+1;
-    yd = (np.tanh(2*xd/x_max)/np.tanh(2)*(ae_at-1/(ai_at)) + 1/ai_at)     # Division is to non-dimensionalize with A_i instead of A_t
+    yd = (np.tanh(2*xd/x_max)/np.tanh(2)*(ae_at/ai_at-1/(ai_at)) + 1/ai_at)     # Division is to non-dimensionalize with A_i instead of A_t
     # x=[xc xd]; y=[yc yd];
     x = np.concatenate((xc, xd))
     y = np.concatenate((yc, yd))
