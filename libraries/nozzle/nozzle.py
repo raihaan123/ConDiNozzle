@@ -10,21 +10,21 @@ import numpy as np
 import plotly.graph_objects as go
 
 
-def nozzle_calc(ae_at, x_max):
+def nozzle_calc(ae_at, ai_at, x_max):
 
     # xc=-3:.1:0;
     xc = np.arange(-3, 0, 0.1)
     # yc=1+xc.^2/4.5;
-    yc = 1 + xc**2/4.5
+    yc = (1/9 - 1/(9*ai_at)) * xc**2 + 1/ai_at        # Division is to non-dimensionalize with A_i instead of A_t
     # xd=0:.1:xmax;
     xd = np.arange(0, x_max, 0.1)
     # yd=tanh(2*xd/xmax)/tanh(2)*(aeat-1)+1;
-    yd = np.tanh(2*xd/x_max)/np.tanh(2)*(ae_at-1) + 1
+    yd = (np.tanh(2*xd/x_max)/np.tanh(2)*(ae_at-1/(ai_at)) + 1/ai_at)     # Division is to non-dimensionalize with A_i instead of A_t
     # x=[xc xd]; y=[yc yd];
     x = np.concatenate((xc, xd))
     y = np.concatenate((yc, yd))
     # ymax=max([3 y(end)*1.5]);
-    y_max = max(3, y[-1]*1.5)
+    y_max = max(1, y[-1]*1.5)
 
     # Adding trailing edge of nozzle
     return([np.concatenate((x, [x_max])), np.concatenate((y, [y_max])), y_max])
@@ -60,7 +60,7 @@ def nozzle_plot(x, y, y_max, x_max):
         title='Nozzle Geometry',
         xaxis_range=[-3, x_max+2],
         yaxis=dict(
-            title='A / At'
+            title='A / Ai'
         ),
         yaxis_range=[0, y_max]
     )
