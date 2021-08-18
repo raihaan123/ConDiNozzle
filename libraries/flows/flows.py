@@ -108,13 +108,18 @@ def me(pbpc, aeat, g):
     return me
 
 
-'''
-
-'''
 
 
+def flow_state(pb_pc, ae_at, g):
 
-
-def flow_state(pbpc, aeat, g):
+    # All possible flow states
     states = ["No Flow - Increase Pressure Ratio!", "Subsonic Flow", "Shock in Nozzle", "Shock at Exit", "Overexpanded Flow", "Design Condition!", "Underexpanded Flow"]
-    
+
+    # Calculating the Design, Subsonic Choked and Shock at Exit flow regimes
+    meD = m_aas(ae_at, g, 1)
+    pbpcD = pp0(meD, g)
+
+    meC = m_aas(ae_at, g, 0)
+    pbpcC = pp0(meC, g)
+
+    pbpcS = p2p1(meD, g) * pbpcD
