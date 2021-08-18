@@ -40,7 +40,7 @@ def m_pp0(pp0, g):
 
 
 def m_aas(a, g, super):                     # super=1 returns supersonic solutions, else subsonic
-    m = np.zeros(len(a))
+    m = np.zeros(np.size(a))
     m[a < 1.0] = np.nan
     m[a == 1.0] = 1.0
 
@@ -49,7 +49,7 @@ def m_aas(a, g, super):                     # super=1 returns supersonic solutio
     else:
         minit = 1e-5
     
-    for n in range(len(a)):
+    for n in range(np.size(a)):
         if m[n] == 0:
             m0 = 1.0
             m1 = minit
@@ -91,9 +91,9 @@ def m_p02p01(r, g):
     
 
 def me(pbpc, aeat, g):
-    meChoke = m_aas(aeat, g, 0)
+    meChoke = m_aas(np.array([aeat]), g, 0)
     pbpcChoke = pp0(meChoke, g)
-    meDesign = m_aas(aeat, g, 1)
+    meDesign = m_aas(np.array([aeat]), g, 1)
     pbpcDesign = pp0(meDesign, g)
     pbpcSAE = p2p1(meDesign, g) * pbpcDesign
 
@@ -110,16 +110,34 @@ def me(pbpc, aeat, g):
 
 
 
-def flow_state(pb_pc, ae_at, g):
+def flow_state(pc_pb, ae_at, g):
 
     # All possible flow states
     states = ["No Flow - Increase Pressure Ratio!", "Subsonic Flow", "Shock in Nozzle", "Shock at Exit", "Overexpanded Flow", "Design Condition!", "Underexpanded Flow"]
 
     # Calculating the Design, Subsonic Choked and Shock at Exit flow regimes
-    meD = m_aas(ae_at, g, 1)
+    meD = m_aas(np.array([ae_at]), g, 1)
     pbpcD = pp0(meD, g)
 
-    meC = m_aas(ae_at, g, 0)
+    meC = m_aas(np.array([ae_at]), g, 0)
     pbpcC = pp0(meC, g)
 
     pbpcS = p2p1(meD, g) * pbpcD
+
+    # Evaluating the flow state
+    if pc_pb <= 1:
+        state = 0                   # No flow
+    elif pc_pb <= 1 / pbpcC:
+        state = 1                   # Subsonic flow
+    elif pc_pb <= 1 / pbpcS:
+        state = 2                   # Shock in nozzle
+    elif pc_pb == 1 / pbpcS:
+        state = 3                   # Shock at exit
+    elif pc_pb <= 1 / pbpcD:
+        state = 4                   # Overexpanded flow
+    elif pc_pb == 1 / pbpcD:
+        state = 5                   # Design condition
+    else:
+        state = 6                   # Underexpanded flow
+    
+    return pbpcC, states[state]
