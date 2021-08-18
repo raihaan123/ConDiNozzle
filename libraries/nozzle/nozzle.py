@@ -13,15 +13,15 @@ import plotly.graph_objects as go
 def nozzle_calc(ae_at, ai_at, x_max):
 
     # xc=-3:.1:0;
-    xc = np.arange(-3, 0, 0.1)
+    xc = np.arange(-3, 0, 0.1)                                                      # Discretisation of x
     # yc=1+xc.^2/4.5;
-    yc = (1/9 - 1/(9*ai_at)) * xc**2 + 1/ai_at        # Division is to non-dimensionalize with A_i instead of A_t
+    yc = (1/9 - 1/(9*ai_at)) * xc**2 + 1/ai_at                                      # Quadratic profile from inlet to throat
     # xd=0:.1:xmax;
     xd = np.arange(0, x_max, 0.1)
     # yd=tanh(2*xd/xmax)/tanh(2)*(aeat-1)+1;
-    yd = (np.tanh(2*xd/x_max)/np.tanh(2)*(ae_at/ai_at-1/(ai_at)) + 1/ai_at)     # Division is to non-dimensionalize with A_i instead of A_t
+    yd = (np.tanh(2*xd/x_max)/np.tanh(2)*(ae_at/ai_at-1/(ai_at)) + 1/ai_at)         # Hyperbolic profile from throat to exit
     # x=[xc xd]; y=[yc yd];
-    x = np.concatenate((xc, xd))
+    x = np.concatenate((xc, xd))                                                    # Stitching up converging and diverging profiles
     y = np.concatenate((yc, yd))
     # ymax=max([3 y(end)*1.5]);
     y_max = max(1, y[-1]*1.5)
@@ -58,11 +58,14 @@ def nozzle_plot(x, y, y_max, x_max):
 
     layout = go.Layout(
         title='Nozzle Geometry',
-        xaxis_range=[-3, x_max+2],
-        yaxis=dict(
-            title='A / Ai'
+        xaxis=dict(
+            title='x',
+            range=[-3, x_max+2]
         ),
-        yaxis_range=[0, y_max]
+        yaxis=dict(
+            title='A / Ai',
+            range=[0, y_max]
+        )
     )
 
     fig = go.Figure(data=[trace1, trace2], layout=layout)

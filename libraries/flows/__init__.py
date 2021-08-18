@@ -1,5 +1,4 @@
 # Flows definition package
 
-from . import *
+from .flows import *
 
-states = ["No Flow", "Subsonic Flow", "Shock in Nozzle", "Underexpanded Flow", "Overexpanded Flow"]
