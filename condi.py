@@ -32,7 +32,7 @@ st.write("""
 st.text("")
 
 # Return current state
-st.info(states[0])
+# st.info(states[0])
 
 # Starting parameters - no-flow state
 init_ae_at = 2.5
