@@ -45,7 +45,7 @@ with st.sidebar:
     st.header("Input Parameters"); st.write("")
 
     # Various sliders for input
-    with st.expander("Nozzle Geometry", expanded=True):
+    with st.beta_expander("Nozzle Geometry", expanded=True):
         ai_at = st.number_input("Compression Ratio (Ai/At)", value=init_ai_at, step=0.1)
         ae_at = st.number_input("Expansion Ratio (Ae/At)", value=init_ae_at, step=0.1)
         export = st.button("Export to CSV")
@@ -62,11 +62,11 @@ x, y, y_max = nozzle_calc(ae_at, ai_at, x_max)
 fig = nozzle_plot(x, y, y_max, x_max)
 st.plotly_chart(fig, use_container_width=True)
 
-pressures =  st.expander("Pressure Distribution")
+pressures =  st.beta_expander("Pressure Distribution")
 with pressures:
     st.write("Coming soon!")
 
-with st.expander("Mach Distribution"):
+with st.beta_expander("Mach Distribution"):
     st.write("Coming soon!")
 
 
