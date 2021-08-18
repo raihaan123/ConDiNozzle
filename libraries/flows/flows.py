@@ -7,16 +7,6 @@ Tracking the flow state for the selected nozzle geometry and pressure ratio
 import numpy as np
 
 
-states = ["No Flow - Increase Pressure Ratio!", "Subsonic Flow", "Shock in Nozzle", "Shock at Exit", "Overexpanded Flow", "Design Condition!", "Underexpanded Flow"]
-
-
-def find_state():
-    return 'hi'
-
-
-
-
-
 # Flow functions
 
 def aas(m, g):
@@ -73,6 +63,7 @@ def m_aas(a, g, super):                     # super=1 returns supersonic solutio
                     m1 = m0 / 2.0
                 
             m[n] = m1
+
     return m
 
 
@@ -115,3 +106,15 @@ def me(pbpc, aeat, g):
     else:
         me = meDesign
     return me
+
+
+'''
+
+'''
+
+
+
+
+def flow_state(pbpc, aeat, g):
+    states = ["No Flow - Increase Pressure Ratio!", "Subsonic Flow", "Shock in Nozzle", "Shock at Exit", "Overexpanded Flow", "Design Condition!", "Underexpanded Flow"]
+    

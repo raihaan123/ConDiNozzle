@@ -38,7 +38,7 @@ st.info(states[0])
 init_ae_at = 2.5
 init_ai_at = 3.0
 init_g = 1.4
-init_pb_pc = 1.0
+init_pc_pb = 1.0
 
 # Using sidebar
 with st.sidebar:
@@ -50,13 +50,15 @@ with st.sidebar:
         ae_at = st.number_input("Expansion Ratio (Ae/At)", value=init_ae_at, step=0.1)
         export = st.button("Export to CSV")
     
-    pb_pc = st.number_input("Chamber / Back Pressure Ratio (Pc/Pb)", value=init_pb_pc, step=0.1)
+    pc_pb = st.number_input("Chamber / Back Pressure Ratio (Pc/Pb)", value=init_pc_pb, step=0.1)
     g = st.number_input("Gamma (Cp/Cv)", value=init_g)
 
     download = st.button("Export Results")
 
 # Calculating the nozzle geometry - comments are MATLAB snippets from CDN.m
 x, y, y_max = nozzle_calc(ae_at, ai_at, x_max)
+
+# Calculating the Design, Subsonic Choked and Shock at Exit flow regimes
 
 # Plotting nozzle geometry with Plotly
 fig = nozzle_plot(x, y, y_max, x_max)
