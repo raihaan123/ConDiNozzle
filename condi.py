@@ -32,7 +32,7 @@ st.write("""
 st.text("")
 
 # Return current state
-st.error(states[0])
+st.info(states[0])
 
 # Starting parameters - no-flow state
 init_ae_at = 2.5
@@ -45,8 +45,10 @@ with st.sidebar:
     st.header("Input Parameters"); st.write("")
 
     # Various sliders for input
-    ai_at = st.number_input("Inlet / Throat Area Ratio (Ai/At)", value=init_ai_at, step=0.1)
-    ae_at = st.number_input("Exit / Throat Area Ratio (Ae/At)", value=init_ae_at, step=0.1)
+    with st.beta_expander("Nozzle Geometry", expanded=True):
+        ai_at = st.number_input("Compression Ratio (Ai/At)", value=init_ai_at, step=0.1)
+        ae_at = st.number_input("Expansion Ratio (Ae/At)", value=init_ae_at, step=0.1)
+    
     pb_pc = st.number_input("Back / Critical Pressure Ratio (Pb/Pc)", value=init_pb_pc, step=0.1)
     g = st.number_input("Gamma (Cp/Cv)", value=init_g)
 
