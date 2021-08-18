@@ -59,7 +59,11 @@ with st.sidebar:
 x, y, y_max = nozzle_calc(ae_at, ai_at, x_max)
 
 # Evaluating the flow state
-st.info(flow_state(pc_pb, ae_at, g))
+@st.cache(suppress_st_warning=True)
+def check_flow_state(pc_pb, ae_at, g):
+    st.info(flow_state(pc_pb, ae_at, g))
+
+check_flow_state(pc_pb, ae_at, g)
 
 # Plotting nozzle geometry with Plotly
 fig = nozzle_plot(x, y, y_max, x_max)
