@@ -3,7 +3,7 @@
 Interactive Converging-Diverging Nozzle Visualisation
 ---> To complement the Compressible Flow Rig!
 
-A pythonic refactoring of CDN.m by William Devenport, Virginia Tech
+A pythonic refactoring of CDN.m (William Devenport, Virginia Tech) by Raihaan Usman
 
 ===================================================================
 Mechanical Engineering, Imperial College London
@@ -11,13 +11,11 @@ Mechanical Engineering, Imperial College London
 '''
 
 import streamlit as st
-import numpy as np
-import plotly.graph_objs as go
 
 
 # Nozzle and flow funcions
 from libraries.nozzle import nozzle_calc, nozzle_plot, x_max
-from libraries.flows import states
+from libraries.flows import find_state, states
 
 
 st.set_page_config(page_title='Interactive Con-Di Nozzle',
