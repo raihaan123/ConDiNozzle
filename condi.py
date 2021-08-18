@@ -17,7 +17,7 @@ import pandas as pd
 
 # Nozzle and flow funcions
 from libraries.nozzle import nozzle_calc, nozzle_plot, x_max
-from libraries.flows import find_state, states
+from libraries.flows import *
 
 
 st.set_page_config(page_title='Interactive Con-Di Nozzle',
