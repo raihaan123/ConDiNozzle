@@ -10,9 +10,9 @@ import numpy as np
 # Flow functions
 
 def aas(m, g):
-    r = 1.0 / m * (2.0 / (g + 1.0) * (1.0 + (g - 1.0) / 2.0 * m ** 2.0)) ** ((g + 1.0) / (g - 1.0))
+    r = 1.0 / m * (2.0 / (g + 1.0) * (1.0 + (g - 1.0) / 2.0 * m ** 2.0)) ** ((g + 1.0) / 2 / (g - 1.0))
     return r
-
+#r=1./m.*(2/(g+1)*(1+(g-1)/2*m.^2)).^((g+1)/2/(g-1));
 
 def pp0(m, g):
     r = (1.0 + (g - 1.0) / 2.0 * m ** 2.0) ** (-g / (g - 1.0))
@@ -39,12 +39,12 @@ def m_pp0(pp0, g):
     return r
 
 
-def m_aas(a, g, super):                     # super=1 returns supersonic solutions, else subsonic
+def m_aas(a, g, super):
     m = np.zeros(np.size(a))
     m[a < 1.0] = np.nan
-    m[a == 1.0] = 1.0
+    m[a == 1.0] = 1.0   
 
-    if super == 1:
+    if super == 1:                                          # super=1 returns supersonic solutions, else subsonic
         minit = 1e5
     else:
         minit = 1e-5
@@ -54,10 +54,10 @@ def m_aas(a, g, super):                     # super=1 returns supersonic solutio
             m0 = 1.0
             m1 = minit
 
-            while abs(m1 - m0) > 1e-6:
+            while np.abs(m1 - m0) > 1e-6:
                 m0 = m1
                 f = aas(m0, g) - a[n]
-                fp = (2.0 / (g + 1.0) * (1.0 + (g - 1.0) / 2.0 * m0 ** 2.0)) ** ((g + 1.0) / (g - 1.0) - 1.0) - aas(m0, g) / m0
+                fp = (2.0 / (g + 1.0) * (1.0 + (g - 1.0) / 2.0 * m0 ** 2.0)) ** ((g + 1.0) / 2 / (g - 1.0) - 1.0) - aas(m0, g) / m0
                 m1 = m0 - f / fp
                 if m1 < 0:
                     m1 = m0 / 2.0
@@ -68,14 +68,16 @@ def m_aas(a, g, super):                     # super=1 returns supersonic solutio
 
 
 def m_p02p01(r, g):
-    m = np.zeros(len(r))
-    m[r < 0.0 | r > 1.0] = np.nan
+    r = np.array([r])
+    m = np.zeros(np.size(r))
+    m[r < 0.0] = np.nan
+    m[r > 1.0] = np.nan
     m[r == 1.0] = 1.0
     
     minit = 2.0
     eps = 1e-4
 
-    for n in range(len(r)):
+    for n in range(np.size(r)):
         if m[n] == 0:
             m0 = 1.0
             m1 = minit
