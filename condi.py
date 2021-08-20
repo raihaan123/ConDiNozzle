@@ -59,11 +59,8 @@ with st.sidebar:
 x, y, y_max = nozzle_calc(ae_at, ai_at, x_max)
 
 # Evaluating the flow state
-@st.cache(suppress_st_warning=True)
-def check_flow_state(pc_pb, ae_at, g):
-    st.info(flow_state(pc_pb, ae_at, g))
-
-check_flow_state(pc_pb, ae_at, g)
+pbpcB, state, m, ppc = flow_state(x, y, pc_pb, ae_at, g)
+st.info(state)
 
 # Plotting nozzle geometry with Plotly
 fig = nozzle_plot(x, y, y_max, x_max)
@@ -71,10 +68,11 @@ st.plotly_chart(fig, use_container_width=True)
 
 pressures =  st.expander("Pressure Distribution")
 with pressures:
-    st.write("Coming soon!")
+    st.write(ppc)
 
-with st.expander("Mach Distribution"):
-    st.write("Coming soon!")
+with st.expander("Mach Distribution", expanded=True):
+    st.write(m)
+
 
 
 

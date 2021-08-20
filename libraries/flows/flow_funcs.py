@@ -12,7 +12,7 @@ import numpy as np
 def aas(m, g):
     r = 1.0 / m * (2.0 / (g + 1.0) * (1.0 + (g - 1.0) / 2.0 * m ** 2.0)) ** ((g + 1.0) / 2 / (g - 1.0))
     return r
-#r=1./m.*(2/(g+1)*(1+(g-1)/2*m.^2)).^((g+1)/2/(g-1));
+
 
 def pp0(m, g):
     r = (1.0 + (g - 1.0) / 2.0 * m ** 2.0) ** (-g / (g - 1.0))
@@ -108,38 +108,3 @@ def me(pbpc, aeat, g):
     else:
         me = meDesign
     return me
-
-
-
-
-def flow_state(pc_pb, ae_at, g):
-
-    # All possible flow states
-    states = ["No Flow - Increase Pressure Ratio!", "Subsonic Flow", "Shock in Nozzle", "Shock at Exit", "Overexpanded Flow", "Design Condition!", "Underexpanded Flow"]
-
-    # Calculating the Design, Subsonic Choked and Shock at Exit flow regimes
-    meD = m_aas(np.array([ae_at]), g, 1)
-    pbpcD = pp0(meD, g)
-
-    meC = m_aas(np.array([ae_at]), g, 0)
-    pbpcC = pp0(meC, g)
-
-    pbpcS = p2p1(meD, g) * pbpcD
-
-    # Evaluating the flow state
-    if pc_pb <= 1:
-        state = 0                   # No flow
-    elif pc_pb <= 1 / pbpcC:
-        state = 1                   # Subsonic flow
-    elif pc_pb <= 1 / pbpcS:
-        state = 2                   # Shock in nozzle
-    elif pc_pb == 1 / pbpcS:
-        state = 3                   # Shock at exit
-    elif pc_pb <= 1 / pbpcD:
-        state = 4                   # Overexpanded flow
-    elif pc_pb == 1 / pbpcD:
-        state = 5                   # Design condition
-    else:
-        state = 6                   # Underexpanded flow
-    
-    return pbpcC, states[state]
