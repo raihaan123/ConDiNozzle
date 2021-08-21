@@ -21,38 +21,92 @@ def flow_state(x, y, pc_pb, ae_at, g):
 
     pbpcS = p2p1(meD, g) * pbpcD
 
-    # Evaluating the flow state
     m = [np.nan]
     ppc = [np.nan]
 
-    if pc_pb <= 1:
-        state = 0                   # No flow
-
-    elif pc_pb <= 1 / pbpcC:
-        state = 1                   # Subsonic flow
+    # Evaluating the flow state
+    if pc_pb <= 1 / pbpcC:
         mexit = m_pp0(1/pc_pb, g)
         aeas = aas(mexit, g)
         m = m_aas(y * aeas / ae_at, g, 0)
         m[y * aeas / ae_at <= 1] = 1
         ppc = pp0(m, g)
+
+        # Mach and Pressure graphs
+
         # axes(ui.axes(2));plot(x,m,'b');ylabel('M');yl=ylim;ylim([0 yl(2)]);xlim(ui.xlim);
         # axes(ui.axes(3));plot(x,ppc,'b');ylabel('p/p_c');yl=ylim;ylim([0 yl(2)]);xlim(ui.xlim);
         # hold on;plot([x(end) ui.xlim(2)-0.5],[ppc(end) pbpc],'b:',[ui.xlim(2)-0.5 ui.xlim(2)],[pbpc pbpc],'b');hold off;
 
+        # No flow
+        if pc_pb <= 1:
+            state = 0
+
+        # Subsonic flow
+        else:
+            state = 1
+            
+            # Adding flow visuals to the nozzle figure
+
+            # axes(ui.axes(1));hold on; %plot flow
+            # hflow=fill([x ui.xlim(2) ui.xlim(2) ui.xlim(1)],[y y(end) 0 0],[0.85 0.85 1]);set(hflow,'Linestyle','none');
+            # hold off 
+
+
+    # Shock in nozzle
     elif pc_pb <= 1 / pbpcS:
-        state = 2                   # Shock in nozzle
+        state = 2
+        # mexit=me(pbpc,aeat,g);
+        mexit = me(1/pc_pb, ae_at, g)
+        # pep02=pp0(mexit,g);
+        pep02 = pp0(mexit, g)
+        # p02pc=pbpc/pep02;
+        p02pc = 1/pc_pb / pep02
+        # m1=m_p02p01(p02pc,g);
+        m1 = m_p02p01(p02pc, g)
+        # a1=aas(m1,g);
+        a1 = aas(m1, g)
+        # up=find(x<0);md=find(x>=0 & y<a1);dn=find(x>0 & y>a1);
+        up = np.where(x < 0)
+        print(up)
+        md1 = np.where(x >= 0)
+        md2 = np.where((y < a1))
+        md = np.union1d(md1, md2)
+        print(md)
+        dn1 = np.where(x > 0)
+        dn2 = np.where((y > a1))
+        dn = np.union1d(dn1, dn2)
 
+        # m=[m_aas(y(up),g,0) m_aas(y(md),g,1) m_aas(y(dn)*p02pc,g,0)];
+        m = np.hstack(( m_aas(y[up], g, 0), m_aas(y[md], g, 1), m_aas(y[dn] * p02pc, g, 0) ))
+        # ppc=pp0(m,g);ppc(dn)=ppc(dn)*p02pc;
+        ppc = pp0(m[0], g)
+        ppc[tuple(dn)] = ppc[tuple(dn)] * p02pc
+
+        # axes(ui.axes(2));plot(x,m,'b');ylabel('M');yl=ylim;ylim([0 yl(2)]);xlim(ui.xlim);
+        # axes(ui.axes(3));plot(x,ppc,'b');ylabel('p/p_c');yl=ylim;ylim([0 yl(2)]);xlim(ui.xlim);
+        # hold on;plot([x(end) ui.xlim(2)-0.5],[ppc(end) pbpc],'b:',[ui.xlim(2)-0.5 ui.xlim(2)],[pbpc pbpc],'b');hold off;
+        # axes(ui.axes(1));hold on; %plot flow and shock
+        # hflow=fill([x ui.xlim(2) ui.xlim(2) ui.xlim(1)],[y y(end) 0 0],[0.85 0.85 1]);set(hflow,'Linestyle','none');
+        # xs=x(md(end))+(a1-y(md(end)))/(y(dn(1))-y(md(end)))*(x(dn(1))-x(md(end)));
+        # hshock=plot([xs xs],[0 a1],'r');set(hshock,'linewidth',m1,'color',[1 1-tanh(m1-1) 1-tanh(m1-1)]);
+        # hold off
+
+    # Shock at exit
     elif pc_pb == 1 / pbpcS:
-        state = 3                   # Shock at exit
+        state = 3       
 
+    # Overexpanded flow
     elif pc_pb <= 1 / pbpcD:
-        state = 4                   # Overexpanded flow
+        state = 4
 
+    # Design condition
     elif pc_pb == 1 / pbpcD:
-        state = 5                   # Design condition
+        state = 5
 
+    # Underexpanded flow
     else:
-        state = 6                   # Underexpanded flow
+        state = 6
 
     
     return pbpcC, states[state], m[:-1], ppc[:-1]

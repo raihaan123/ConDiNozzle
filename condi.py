@@ -31,9 +31,6 @@ st.write("""
 """)
 st.text("")
 
-# Return current state
-# st.info(states[0])
-
 # Starting parameters - no-flow state
 init_ae_at = 2.5
 init_ai_at = 3.0
@@ -60,21 +57,24 @@ x, y, y_max = nozzle_calc(ae_at, ai_at, x_max)
 
 # Evaluating the flow state
 pbpcB, state, m, ppc = flow_state(x, y, pc_pb, ae_at, g)
+
+# Return current state
 st.info(state)
 
 # Plotting nozzle geometry with Plotly
 fig = nozzle_plot(x, y, y_max, x_max)
 st.plotly_chart(fig, use_container_width=True)
 
-pressures =  st.expander("Pressure Distribution")
-with pressures:
+# Pressure profile through nozzle
+with st.expander("Pressure Distribution", expanded=True):
     st.write(ppc)
 
+# Mach profile through nozzle
 with st.expander("Mach Distribution", expanded=True):
     st.write(m)
 
 
-
+# Sample code for exporting pandas dataframes to CSV
 
 # if download:
 #   'Download Started!'

@@ -108,3 +108,11 @@ def me(pbpc, aeat, g):
     else:
         me = meDesign
     return me
+
+
+def plot_pressure():
+    None
+    
+
+def plot_mach():
+    None
