@@ -56,7 +56,7 @@ with st.sidebar:
 x, y, y_max = nozzle_calc(ae_at, ai_at, x_max)
 
 # Evaluating the flow state
-pbpcB, state, m, ppc = flow_state(x, y, pc_pb, ae_at, g)
+pbpcB, state, m, ppc = flow_state(x, y, pc_pb, ae_at, ai_at, g)
 
 # Return current state
 st.info(state)

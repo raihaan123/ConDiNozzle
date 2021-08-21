@@ -7,13 +7,14 @@ Flow state identifier
 from .flow_funcs import *
 
 
-def flow_state(x, y, pc_pb, ae_at, g):
+def flow_state(x, y, pc_pb, ae_at, ai_at, g):
 
     # All possible flow states
     states = ["No Flow - Increase Pressure Ratio!", "Subsonic Flow", "Shock in Nozzle", "Shock at Exit", "Overexpanded Flow", "Design Condition!", "Underexpanded Flow"]
 
     # Calculating the Design, Subsonic Choked and Shock at Exit flow regimes
     meD = m_aas(np.array([ae_at]), g, 1)
+    print(meD)
     pbpcD = pp0(meD, g)
 
     meC = m_aas(np.array([ae_at]), g, 0)
@@ -56,32 +57,31 @@ def flow_state(x, y, pc_pb, ae_at, g):
     # Shock in nozzle
     elif pc_pb <= 1 / pbpcS:
         state = 2
-        # mexit=me(pbpc,aeat,g);
-        mexit = me(1/pc_pb, ae_at, g)
-        # pep02=pp0(mexit,g);
-        pep02 = pp0(mexit, g)
-        # p02pc=pbpc/pep02;
-        p02pc = 1/pc_pb / pep02
-        # m1=m_p02p01(p02pc,g);
-        m1 = m_p02p01(p02pc, g)
-        # a1=aas(m1,g);
-        a1 = aas(m1, g)
-        # up=find(x<0);md=find(x>=0 & y<a1);dn=find(x>0 & y>a1);
-        up = np.where(x < 0)
-        print(up)
-        md1 = np.where(x >= 0)
-        md2 = np.where((y < a1))
-        md = np.union1d(md1, md2)
-        print(md)
-        dn1 = np.where(x > 0)
-        dn2 = np.where((y > a1))
-        dn = np.union1d(dn1, dn2)
 
-        # m=[m_aas(y(up),g,0) m_aas(y(md),g,1) m_aas(y(dn)*p02pc,g,0)];
-        m = np.hstack(( m_aas(y[up], g, 0), m_aas(y[md], g, 1), m_aas(y[dn] * p02pc, g, 0) ))
-        # ppc=pp0(m,g);ppc(dn)=ppc(dn)*p02pc;
-        ppc = pp0(m[0], g)
-        ppc[tuple(dn)] = ppc[tuple(dn)] * p02pc
+        mexit = me(1/pc_pb, ae_at, g)
+        pep02 = pp0(mexit, g)
+        p02pc = (1/pc_pb) / pep02
+
+        m1 = m_p02p01(p02pc, g)
+        a1 = aas(m1, g)
+
+        # Sorting indicies
+        up = np.where(x < 0)[0]
+
+        md1 = np.where(x >= 0)
+        md2 = np.where(y * ai_at < a1)
+        md = np.intersect1d(md1, md2)
+
+        dn1 = np.where(x > 0)
+        dn2 = np.where(y * ai_at > a1)
+        dn = np.intersect1d(dn1[0], dn2[0])
+
+        m = np.hstack(( m_aas(ai_at * y[up], g, 0), m_aas(ai_at * y[md], g, 1), m_aas(ai_at * y[dn] * p02pc, g, 0) ))
+
+        ppc = pp0(m, g)
+        ppc[dn] = ppc[dn] * p02pc
+
+        # All the graphs!
 
         # axes(ui.axes(2));plot(x,m,'b');ylabel('M');yl=ylim;ylim([0 yl(2)]);xlim(ui.xlim);
         # axes(ui.axes(3));plot(x,ppc,'b');ylabel('p/p_c');yl=ylim;ylim([0 yl(2)]);xlim(ui.xlim);
