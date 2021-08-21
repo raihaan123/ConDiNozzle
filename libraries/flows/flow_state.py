@@ -25,7 +25,9 @@ def flow_state(x, y, pc_pb, ae_at, ai_at, g):
     m = [np.nan]
     ppc = [np.nan]
 
+
     # Evaluating the flow state
+
     if pc_pb <= 1 / pbpcC:
         mexit = m_pp0(1/pc_pb, g)
         aeas = aas(mexit, g)
@@ -92,21 +94,35 @@ def flow_state(x, y, pc_pb, ae_at, ai_at, g):
         # hshock=plot([xs xs],[0 a1],'r');set(hshock,'linewidth',m1,'color',[1 1-tanh(m1-1) 1-tanh(m1-1)]);
         # hold off
 
-    # Shock at exit
-    elif pc_pb == 1 / pbpcS:
-        state = 3       
+    elif pc_pb >= 1 / pbpcS:
 
-    # Overexpanded flow
-    elif pc_pb <= 1 / pbpcD:
-        state = 4
+        # up=find(x<0);dn=find(x>=0);
+        up = np.where(x < 0)[0]
+        dn = np.where(x >= 0)[0]
+        print(up)
 
-    # Design condition
-    elif pc_pb == 1 / pbpcD:
-        state = 5
+        # m=[m_aas(y(up),g,0) m_aas(y(dn),g,1)];
+        m = np.hstack(( m_aas(ai_at * y[up], g, 0), m_aas(ai_at * y[dn], g, 1) ))
+        print(m_aas(ai_at * y[up], g, 0))
 
-    # Underexpanded flow
-    else:
-        state = 6
+        # ppc=pp0(m,g);
+        ppc = pp0(m, g)
+        
+        # Shock at exit
+        if pc_pb == 1 / pbpcS:
+            state = 3
+
+        # Overexpanded flow
+        elif pc_pb <= 1 / pbpcD:
+            state = 4
+
+        # Design condition
+        elif pc_pb == 1 / pbpcD:
+            state = 5
+
+        # Underexpanded flow
+        else:
+            state = 6
 
     
     return pbpcC, states[state], m[:-1], ppc[:-1]
