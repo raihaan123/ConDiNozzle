@@ -67,10 +67,14 @@ st.plotly_chart(fig, use_container_width=True)
 
 # Pressure profile through nozzle
 with st.expander("Pressure Distribution", expanded=True):
+    fig2 = plot_pressure(x, ppc)
+    st.plotly_chart(fig2, use_container_width=True)
     st.write(ppc)
 
 # Mach profile through nozzle
 with st.expander("Mach Distribution", expanded=True):
+    fig3 = plot_mach(x, m)
+    st.plotly_chart(fig3, use_container_width=True)
     st.write(m)
 
 

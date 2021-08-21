@@ -5,6 +5,7 @@ Tracking the flow state for the selected nozzle geometry and pressure ratio
 '''
 
 import numpy as np
+import plotly.graph_objs as go
 
 
 # Flow functions
@@ -110,9 +111,44 @@ def me(pbpc, aeat, g):
     return me
 
 
-def plot_pressure():
-    None
+def plot_pressure(x, ppc):
+    trace1 = go.Scatter(
+        x=x,
+        y=ppc,
+        mode='lines',
+        name='Pressure',
+        line=dict(
+            color='rgb(153, 0, 51)',
+            width=3
+        ),
+        # fill = 'tozeroy',
+        # fillcolor='rgba(0,0,0,0.1)',
+        showlegend=False
+    )
     
+    fig = go.Figure(data=[trace1])
+    fig.update_xaxes(showgrid=False, zeroline=False)
+    fig.update_yaxes(showgrid=False, zeroline=False)
+    
+    return fig
 
-def plot_mach():
-    None
+def plot_mach(x, m):
+    trace1 = go.Scatter(
+        x=x,
+        y=m,
+        mode='lines',
+        name='Mach',
+        line=dict(
+            color='rgb(153, 0, 51)',
+            width=3
+        ),
+        # fill = 'tozeroy',
+        # fillcolor='rgba(0,0,0,0.1)',
+        showlegend=False
+    )
+    
+    fig = go.Figure(data=[trace1])
+    fig.update_xaxes(showgrid=False, zeroline=False)
+    fig.update_yaxes(showgrid=False, zeroline=False)
+    
+    return fig
