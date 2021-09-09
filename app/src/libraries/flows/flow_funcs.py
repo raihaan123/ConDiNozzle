@@ -116,14 +116,14 @@ def plot_pressure(x, ppc):
         x=x,
         y=ppc,
         mode='lines',
-        name='Pressure',
+        name='Analytic',
         line=dict(
             color='rgb(153, 0, 51)',
             width=3
         ),
         # fill = 'tozeroy',
         # fillcolor='rgba(0,0,0,0.1)',
-        showlegend=False
+        showlegend=True
     )
     
     fig = go.Figure(data=[trace1])
@@ -144,7 +144,7 @@ def plot_mach(x, m):
         ),
         # fill = 'tozeroy',
         # fillcolor='rgba(0,0,0,0.1)',
-        showlegend=False
+        showlegend=True
     )
     
     fig = go.Figure(data=[trace1])
