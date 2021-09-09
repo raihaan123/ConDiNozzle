@@ -1,7 +1,7 @@
 
 '''
 Interactive Converging-Diverging Nozzle Visualisation
----> To complement the Compressible Flow Rig!
+---> Integrating with the Compressible Flow Rig!
 
 A pythonic refactoring of CDN.m (William Devenport, Virginia Tech) by Raihaan Usman
 
@@ -11,6 +11,7 @@ Mechanical Engineering, Imperial College London
 '''
 
 import streamlit as st
+import asyncio
 import base64
 import pandas as pd
 
@@ -18,12 +19,13 @@ import pandas as pd
 # Nozzle and flow funcions
 from libraries.nozzle import nozzle_calc, nozzle_plot, x_max
 from libraries.flows import *
+from libraries.utils import *
 
 
 st.set_page_config(page_title='Interactive Con-Di Nozzle',
                    page_icon='media/mech.jpg',
-                   layout='wide')
-
+                   layout='wide'
+                )
 
 st.write("""
 ## Interactive Converging-Diverging Nozzle Visualisation
@@ -39,6 +41,10 @@ init_pc_pb = 1.0
 
 # Using sidebar
 with st.sidebar:
+
+    status = st.empty()
+    connect = st.checkbox("Connect to Flow Rig")
+    
     st.header("Input Parameters"); st.write("")
 
     # Various sliders for input
@@ -65,10 +71,13 @@ st.info(state)
 fig = nozzle_plot(x, y, y_max, x_max)
 st.plotly_chart(fig, use_container_width=True)
 
-# Pressure profile through nozzle
+# Pressure profile through nozzle - also includes real time data
 with st.expander("Pressure Distribution", expanded=True):
-    fig2 = plot_pressure(x, ppc)
-    st.plotly_chart(fig2, use_container_width=True)
+    rt_sensordata = st.empty()
+    if connect == False:
+        analytic_pressure = plot_pressure(x, ppc)
+        st.plotly_chart(analytic_pressure, use_container_width=True)
+
     st.write(ppc)
 
 # Mach profile through nozzle
@@ -76,6 +85,13 @@ with st.expander("Mach Distribution", expanded=True):
     fig3 = plot_mach(x, m)
     st.plotly_chart(fig3, use_container_width=True)
     st.write(m)
+
+
+if connect:
+    asyncio.run(rt_dataprocessing(rt_sensordata, x, ppc, status))
+
+else:
+    status.error(f"Disconnected from Flow Rig!")
 
 
 # Sample code for exporting pandas dataframes to CSV

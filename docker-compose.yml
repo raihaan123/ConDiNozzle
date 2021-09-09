@@ -1,0 +1,12 @@
+version: "2"
+
+services:
+    wsserver:
+        build:
+            context: ./serial-data
+    
+    lit-app:
+        build:
+            context: ./app
+        ports:
+            - 8501:8501
