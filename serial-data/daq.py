@@ -14,6 +14,6 @@ async def websocket_endpoint(websocket: WebSocket):
             "data": list(np.random.uniform(0.5,0.95, size=4))
             }
         )
-        await asyncio.sleep(0.01)
+        await asyncio.sleep(0.1)
 
 # numpy random array of length 4

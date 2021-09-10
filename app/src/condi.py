@@ -27,6 +27,9 @@ st.set_page_config(page_title='Interactive Con-Di Nozzle',
                    layout='wide'
                 )
 
+
+rec_state = st.empty()
+
 st.write("""
 ## Interactive Converging-Diverging Nozzle Visualisation
 ### Department of Mechanical Engineering, Imperial College London
@@ -39,22 +42,32 @@ init_ai_at = 3.0
 init_g = 1.4
 init_pc_pb = 1.0
 
+# Datalogging setup in SessionState
+logger = 'logger'
+if logger not in st.session_state:
+    st.session_state[logger] = []
+
 # Using sidebar
 with st.sidebar:
 
+    st.header('Demo Setup')
+
     status = st.empty()
     connect = st.checkbox("Connect to Flow Rig")
+    record = st.empty()
     
-    st.header("Input Parameters"); st.write("")
+    st.header("Analytic Parameters"); st.write("")
 
     # Various sliders for input
     with st.expander("Nozzle Geometry", expanded=True):
         ai_at = st.number_input("Compression Ratio (Ai/At)", value=init_ai_at, step=0.1)
         ae_at = st.number_input("Expansion Ratio (Ae/At)", value=init_ae_at, step=0.1)
         export = st.button("Export to CSV")
-    
-    pc_pb = st.number_input("Chamber / Back Pressure Ratio (Pc/Pb)", value=init_pc_pb, step=0.1)
-    g = st.number_input("Gamma (Cp/Cv)", value=init_g)
+
+    with st.expander("Flow Parameters", expanded=True):
+        curr_state = st.empty()
+        pc_pb = st.number_input("Chamber / Back Pressure Ratio (Pc/Pb)", value=init_pc_pb, step=0.1)
+        g = st.number_input("Gamma (Cp/Cv)", value=init_g)
 
     download = st.button("Export Results")
 
@@ -65,33 +78,62 @@ x, y, y_max = nozzle_calc(ae_at, ai_at, x_max)
 pbpcB, state, m, ppc = flow_state(x, y, pc_pb, ae_at, ai_at, g)
 
 # Return current state
-st.info(state)
+curr_state.info(state)
 
 # Plotting nozzle geometry with Plotly
 fig = nozzle_plot(x, y, y_max, x_max)
 st.plotly_chart(fig, use_container_width=True)
 
 # Pressure profile through nozzle - also includes real time data
-with st.expander("Pressure Distribution", expanded=True):
-    rt_sensordata = st.empty()
-    if connect == False:
-        analytic_pressure = plot_pressure(x, ppc)
-        st.plotly_chart(analytic_pressure, use_container_width=True)
+rt_ptaps = st.empty()
+if connect == False:
+    analytic_pressure = plot_pressure(x, ppc)
+    st.plotly_chart(analytic_pressure, use_container_width=True)
 
+with st.expander("Pressure Data"):
     st.write(ppc)
 
 # Mach profile through nozzle
-with st.expander("Mach Distribution", expanded=True):
-    fig3 = plot_mach(x, m)
-    st.plotly_chart(fig3, use_container_width=True)
+fig3 = plot_mach(x, m)
+st.plotly_chart(fig3, use_container_width=True)
+
+with st.expander("Mach Data"):
     st.write(m)
 
 
-if connect:
-    asyncio.run(rt_dataprocessing(rt_sensordata, x, ppc, status))
+
+recordKey = 'record_key'
+if recordKey not in st.session_state:
+    st.session_state[recordKey] = False
+
+if st.session_state[recordKey]:
+    record.button('Stop recording')
+    if record:
+        rec_state.empty()
+        st.session_state[recordKey] = False
+
+else:
+    record.button('Start recording')
+    if record:
+        rec_state.info('Recording!')
+        st.session_state[recordKey] = True
+
+
+stub = st.empty()
+
+
+# Real time data!
+if connect and record:
+    st.session_state[logger].append(asyncio.run(rt_dataprocessing(rt_ptaps, x, ppc, status, stub, True)))
+    print(st.session_state[logger])
+    # st.sidebar.write(st.session_state[logger])
+
+elif connect:
+    asyncio.run(rt_dataprocessing(rt_ptaps, x, ppc, status, False))
 
 else:
     status.error(f"Disconnected from Flow Rig!")
+
 
 
 # Sample code for exporting pandas dataframes to CSV

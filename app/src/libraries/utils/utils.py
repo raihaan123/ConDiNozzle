@@ -1,9 +1,7 @@
 import aiohttp
-from collections import deque, defaultdict
-from functools import partial
 from os import getenv
-# import plotly.express as px
 import plotly.graph_objects as go
+import pandas as pd
 
 from libraries.flows import *
 
@@ -18,9 +16,9 @@ else:
     WS_CONN = "ws://localhost:8000/pressureTaps"
 
 
-async def rt_dataprocessing(graph, x, ppc, status):
+async def rt_dataprocessing(graph, x, ppc, status, stub, logging=False):
 
-    # window = deque(([0 for _ in range(10)]), maxlen=10)
+    df = pd.DataFrame(columns=["Tapping 1", "Tapping 2", "Tapping 3", "Tapping 4"])
 
     async with aiohttp.ClientSession(trust_env = True) as session:
         status.info(f"Connecting to {WS_CONN}")
@@ -46,4 +44,8 @@ async def rt_dataprocessing(graph, x, ppc, status):
                 )
 
                 graph.plotly_chart(fig, use_container_width=True)
-                # graph.plotly_chart(px.line(data))
+
+                if logging:
+                    # Add list data to dataframe
+                    df.loc[len(df)] = data
+                    stub.write(df)

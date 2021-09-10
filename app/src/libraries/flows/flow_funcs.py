@@ -127,6 +127,13 @@ def plot_pressure(x, ppc):
     )
     
     fig = go.Figure(data=[trace1])
+
+    fig.update_layout(
+        title='Pressure Distribution',
+        xaxis_title='x',
+        yaxis_title='P / Pc'
+    )
+
     fig.update_xaxes(showgrid=False, zeroline=False)
     fig.update_yaxes(showgrid=False, zeroline=False)
     
@@ -137,7 +144,7 @@ def plot_mach(x, m):
         x=x,
         y=m,
         mode='lines',
-        name='Mach',
+        name='Analytic',
         line=dict(
             color='rgb(153, 0, 51)',
             width=3
@@ -148,6 +155,13 @@ def plot_mach(x, m):
     )
     
     fig = go.Figure(data=[trace1])
+
+    fig.update_layout(
+        title='Mach Distribution',
+        xaxis_title='x',
+        yaxis_title='Mach'
+    )
+
     fig.update_xaxes(showgrid=False, zeroline=False)
     fig.update_yaxes(showgrid=False, zeroline=False)
     
