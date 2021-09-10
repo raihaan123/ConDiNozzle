@@ -123,6 +123,5 @@ def flow_state(x, y, pc_pb, ae_at, ai_at, g):
         # Underexpanded flow
         else:
             state = 6
-
     
     return pbpcC, states[state], m[:-1], ppc[:-1]

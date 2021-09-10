@@ -1,5 +1,4 @@
 from fastapi import FastAPI, WebSocket
-# from random import choice, randint
 import asyncio
 import numpy as np
 
@@ -7,6 +6,8 @@ import numpy as np
 app = FastAPI()
 
 @app.websocket("/pressureTaps")
+
+# This is where the serial sensor data integrates to the Streamlit app using websockets
 async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
     while True:
@@ -15,5 +16,3 @@ async def websocket_endpoint(websocket: WebSocket):
             }
         )
         await asyncio.sleep(0.1)
-
-# numpy random array of length 4

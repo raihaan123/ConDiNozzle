@@ -19,6 +19,8 @@ else:
 async def rt_dataprocessing(graph, x, ppc, status, stub, logging=False):
 
     df = pd.DataFrame(columns=["Tapping 1", "Tapping 2", "Tapping 3", "Tapping 4"])
+    df.index.name = "Time"
+
 
     async with aiohttp.ClientSession(trust_env = True) as session:
         status.info(f"Connecting to {WS_CONN}")

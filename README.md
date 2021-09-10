@@ -7,4 +7,4 @@ How to use:
 
 2. Install docker on your Linux system with `sudo apt install docker`
 
-3. Build the image with `sudo docker-compose up`
+3. Build the image with `sudo docker-compose up` - for development, use `sudo docker-compose up --build`

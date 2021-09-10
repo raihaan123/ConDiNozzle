@@ -2,3 +2,4 @@ streamlit
 aiohttp
 plotly
 pandas
+streamlit-webrtc==0.28.1

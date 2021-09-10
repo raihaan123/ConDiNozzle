@@ -7,4 +7,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 ENV IS_DOCKERIZED true
 COPY src ./
 
-CMD ["streamlit", "run", "condi.py"]
+CMD ["streamlit", "run", "main.py"]
